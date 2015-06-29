@@ -1,0 +1,16 @@
+import urllib2
+import time 
+class GETIP:
+    def Get_ip(self):
+            time.sleep(1)
+            url='http://ervx.daili666.com/ip/?tid=556313282996285&filter=on&num=100&ports=80,8080&foreign=none'
+            opener=urllib2.build_opener()
+            request=urllib2.Request(url)
+            response=opener.open(request)
+            ip=response.read()
+            response.close()
+            f22=open('IP'+'.txt','w+')
+            f22.writelines(ip)
+            f22.close()
+ss=GETIP()
+ss.Get_ip()

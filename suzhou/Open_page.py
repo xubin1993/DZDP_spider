@@ -1,0 +1,95 @@
+#coding=utf-8
+import urllib2
+import re
+import string
+import random
+import socket
+import urllib2
+import cookielib
+import Queue
+import random
+from Get_ip import GETIP
+ERROR = {
+             '0':'Can not open the url,checck you net',
+             '1':'Creat download dir error',
+             '2':'The image links is empty',
+             '3':'Download faild',
+             '4':'Build soup error,the html is empty',
+             '5':'Can not save the image to your disk',
+         }
+class Openpage(): 
+     def __init__(self):
+          socket.setdefaulttimeout(20)
+          self.key=0
+          self.get_ip=GETIP()
+          #self.signal=0
+          self.ip=[]
+          #self.ip=''
+          f=open('IP2'+'.txt','r')
+          for line in f.readlines():
+               line=line.strip('\r\n')
+               self.ip.append(str(line))
+          f.close()              
+     def Getpage(self,url):
+          #self.ip=self.get_ip.Get_ip(self.signal)
+          #self.signal=self.signal+1
+          #self.key=random.randint(0,9)
+         # print self.key
+          #self.ip='111.161.126.98:80'
+          
+          #ip=self.ip[self.key]
+          #print ip
+          #print self.key
+         # proxy = {'http':ip}
+          #proxy_support = urllib2.ProxyHandler(proxy)
+          
+      
+          #添加头信息，模仿浏览器抓取网页，对付返回403禁止访问的问题
+          # i_headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+          #i_headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48'}       
+          cookie_support= urllib2.HTTPCookieProcessor(cookielib.CookieJar())
+          self.opener = urllib2.build_opener(cookie_support,urllib2.HTTPHandler)#proxy_support,
+          urllib2.install_opener(self.opener)
+          user_agents = [
+                    'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
+                    'Opera/9.25 (Windows NT 5.1; U; en)',
+                    'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
+                    'Mozilla/5.0 (compatible; Konqueror/3.5; Linux) KHTML/3.5.5 (like Gecko) (Kubuntu)',
+                    'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.12) Gecko/20070731 Ubuntu/dapper-security Firefox/1.5.0.12',
+                    'Lynx/2.8.5rel.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/1.2.9',
+                    "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.7 (KHTML, like Gecko) Ubuntu/11.04 Chromium/16.0.912.77 Chrome/16.0.912.77 Safari/535.7",
+                    "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:10.0) Gecko/20100101 Firefox/36.0 ",
+                    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100103 Firefox/37.0',
+                    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'
+     
+                    ] 
+          if url.find('photos?') !=-1:
+               t=''
+          else:
+               t=url
+          agent = random.choice(user_agents)
+          self.opener.addheaders = [("User-agent",agent),('Host','www.dianping.com'),("Accept","*/*"),('Referer',t)]
+          try:
+               myPage = self.opener.open(url,timeout=10).read()
+               self.opener.close()
+               return myPage
+              
+          except Exception,e:
+               print e
+           
+               if self.key<len(self.ip)-1:
+                    self.key=self.key+1
+               else:
+                    self.get_ip.Get_ip()
+                    self.key=0
+                    f=open('IP2'+'.txt','r')
+          	    for line in f.readlines():
+              		 line=line.strip('\r\n')
+               		 self.ip.append(str(line))
+          	    f.close()   
+                    print 'sss'
+               self.Getpage(url)
+     
+
+        
+ 
